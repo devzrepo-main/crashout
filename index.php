@@ -8,19 +8,26 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <style>
+    :root {
+      --crash-red: #b30000; /* single source of truth for red color */
+      --crash-red-dark: #800000;
+    }
+
     body {
       background-color: #111;
-      color: #ff3333;
+      color: var(--crash-red);
       text-align: center;
       padding: 30px 10px;
       font-family: Arial, sans-serif;
     }
-    h1, h2 {
-      color: #ff3333;
+
+    h1, h2, p, label {
+      color: var(--crash-red);
       font-weight: bold;
     }
+
     .btn-crash {
-      background-color: #ff3333;
+      background-color: var(--crash-red);
       color: white;
       border: none;
       width: 90%;
@@ -32,13 +39,17 @@
       border-radius: 8px;
       transition: background-color 0.2s ease;
     }
-    .btn-crash:hover {
-      background-color: #cc0000;
+
+    .btn-crash:hover,
+    .btn-danger:hover,
+    .btn-clear:hover {
+      background-color: var(--crash-red-dark);
     }
+
     .totals {
       margin-top: 40px;
       padding: 20px;
-      border: 2px solid #ff3333;
+      border: 2px solid var(--crash-red);
       border-radius: 10px;
       width: 90%;
       max-width: 500px;
@@ -46,28 +57,28 @@
       margin-right: auto;
       background-color: #1a1a1a;
     }
-    .totals h2 {
-      color: #ff3333;
-      font-weight: bold;
-      margin-bottom: 15px;
-    }
-    .totals p {
-      font-size: 1.1em;
-      margin: 5px 0;
-      color: #ff3333;
-    }
+
     .btn-clear {
-      background-color: #444;
-      color: #fff;
+      background-color: var(--crash-red);
+      color: white;
       width: 90%;
       max-width: 400px;
       margin: 20px auto 0;
       display: block;
       padding: 12px;
       border-radius: 8px;
+      border: none;
+      font-weight: bold;
     }
-    .btn-clear:hover {
-      background-color: #666;
+
+    .btn-danger {
+      background-color: var(--crash-red) !important;
+      border: none !important;
+      color: white !important;
+    }
+
+    hr {
+      border: 1px solid var(--crash-red);
     }
   </style>
 </head>
@@ -152,7 +163,7 @@
         }
 
         const totalP = document.createElement('p');
-        totalP.innerHTML = `<hr style="border-color:#ff3333;">Total: <strong>${grandTotal}</strong>`;
+        totalP.innerHTML = `<hr>Total: <strong>${grandTotal}</strong>`;
         totalsDiv.appendChild(totalP);
       } catch (err) {
         console.error('Failed to load totals:', err);
