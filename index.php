@@ -4,13 +4,12 @@
   <meta charset="UTF-8">
   <title>Crashout Counter</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <style>
     :root {
-      --crash-red: #b30000; /* single source of truth for red color */
-      --crash-red-dark: #800000;
+      --crash-red: #b30000;      /* primary red */
+      --crash-red-dark: #800000; /* darker red hover */
     }
 
     body {
@@ -71,10 +70,34 @@
       font-weight: bold;
     }
 
-    .btn-danger {
+    /* Modal Styling */
+    .modal-content {
+      background-color: #000;
+      border: 2px solid var(--crash-red);
+      color: var(--crash-red);
+    }
+    .modal-header, .modal-footer {
+      border-color: var(--crash-red);
+    }
+    .modal-title {
+      color: var(--crash-red);
+    }
+    .form-control {
+      background-color: #111;
+      color: var(--crash-red);
+      border: 1px solid var(--crash-red);
+    }
+    .form-control::placeholder {
+      color: #ff6666;
+    }
+
+    .btn-danger, .btn-secondary {
       background-color: var(--crash-red) !important;
-      border: none !important;
       color: white !important;
+      border: none !important;
+    }
+    .btn-danger:hover, .btn-secondary:hover {
+      background-color: var(--crash-red-dark) !important;
     }
 
     hr {
@@ -105,10 +128,10 @@
   <!-- Modal for Other -->
   <div class="modal fade" id="otherModal" tabindex="-1" aria-labelledby="otherModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content text-dark">
+      <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="otherModalLabel">Add Other Crashout</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <input type="text" id="otherReason" class="form-control" placeholder="Enter reason..." />
@@ -133,14 +156,9 @@
           body: `category=${encodeURIComponent(category)}&reason=${encodeURIComponent(reason)}`
         });
         const data = await res.json();
-        if (data.success) {
-          loadTotals();
-        } else {
-          console.error('Add failed', data);
-          alert('Failed to add crashout.');
-        }
-      } catch (err) {
-        console.error('Error:', err);
+        if (data.success) loadTotals();
+        else alert('Failed to add crashout.');
+      } catch {
         alert('Server error.');
       }
     }
@@ -151,7 +169,6 @@
         const data = await res.json();
         const totalsDiv = document.getElementById('totalsContainer');
         totalsDiv.innerHTML = '';
-
         let grandTotal = 0;
         for (const cat of categories) {
           const count = parseInt(data[cat] || 0);
@@ -161,12 +178,10 @@
           p.innerHTML = `${label}: <strong>${count}</strong>`;
           totalsDiv.appendChild(p);
         }
-
         const totalP = document.createElement('p');
         totalP.innerHTML = `<hr>Total: <strong>${grandTotal}</strong>`;
         totalsDiv.appendChild(totalP);
-      } catch (err) {
-        console.error('Failed to load totals:', err);
+      } catch {
         document.getElementById('totalsContainer').innerHTML = '<p>Error loading totals.</p>';
       }
     }
@@ -176,31 +191,25 @@
       try {
         const res = await fetch('./api.php?action=clear', { method: 'POST' });
         const data = await res.json();
-        if (data.success) {
-          loadTotals();
-        } else {
-          alert('Failed to clear crashouts.');
-        }
-      } catch (err) {
-        console.error(err);
+        if (data.success) loadTotals();
+        else alert('Failed to clear crashouts.');
+      } catch {
         alert('Error clearing crashouts.');
       }
     }
 
     function openOtherModal() {
-      const modal = new bootstrap.Modal(document.getElementById('otherModal'));
-      modal.show();
+      new bootstrap.Modal(document.getElementById('otherModal')).show();
     }
 
     function submitOther() {
       const reason = document.getElementById('otherReason').value.trim();
-      if (reason === '') {
+      if (!reason) {
         alert('Please enter a reason.');
         return;
       }
       addCrashout('other', reason);
-      const modal = bootstrap.Modal.getInstance(document.getElementById('otherModal'));
-      modal.hide();
+      bootstrap.Modal.getInstance(document.getElementById('otherModal')).hide();
       document.getElementById('otherReason').value = '';
     }
 
