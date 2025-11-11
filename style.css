@@ -1,0 +1,16 @@
+body { min-height: 100vh; }
+.card.metric {
+  background: #111;
+  border: 1px solid #2d2d2d;
+  border-radius: 0.75rem;
+}
+.metric-label {
+  font-size: 0.95rem;
+  color: #aaa;
+  letter-spacing: .02em;
+}
+.metric-value {
+  font-size: 2rem;
+  font-weight: 700;
+}
+.table thead th { color: #bbb; }
