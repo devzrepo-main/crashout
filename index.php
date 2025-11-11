@@ -9,34 +9,45 @@
   <style>
     body {
       background-color: #0a0a0a;
-      color: #00ff00;
+      color: #ff0000;
       font-family: 'Courier New', monospace;
       text-align: center;
       padding-top: 50px;
+    }
+    h1 {
+      margin-bottom: 40px;
+      color: #ff0000;
     }
     .btn {
       margin: 10px;
       font-weight: bold;
       border-radius: 12px;
     }
-    h1 {
-      margin-bottom: 40px;
-      color: #0f0;
-    }
     .counter {
       font-size: 1.3rem;
       margin-top: 8px;
+      color: #ff0000;
     }
-    input {
+    .totals-title {
+      color: #ff0000;
+      font-size: 1.8rem;
+      margin-top: 50px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+    .modal-content {
       background-color: #111;
-      color: #0f0;
-      border: 1px solid #0f0;
+      color: #ff0000;
+      border: 1px solid #ff0000;
+    }
+    .form-control {
+      background-color: #111;
+      color: #ff0000;
+      border: 1px solid #ff0000;
     }
     .form-control:focus {
-      background-color: #111;
-      color: #0f0;
-      border-color: #00ff00;
-      box-shadow: 0 0 5px #00ff00;
+      box-shadow: 0 0 5px #ff0000;
     }
   </style>
 </head>
@@ -46,19 +57,15 @@
 
     <div class="d-grid gap-2 col-6 mx-auto">
       <button class="btn btn-danger" onclick="addCrashout('Sports')">Yelling about Sports</button>
-      <button class="btn btn-warning" onclick="addCrashout('Video Game')">Yelling about a Video Game</button>
-      <button class="btn btn-secondary" onclick="addCrashout('Minorities')">Yelling about Minorities</button>
-      <button class="btn btn-info" onclick="addCrashout('Doordash Delivery')">Yelling about Doordash Delivery</button>
-      <button class="btn btn-primary" onclick="addCrashout('Technology')">Yelling about Technology</button>
-
-      <div class="input-group mt-3">
-        <input type="text" id="otherReason" class="form-control" placeholder="Other reason...">
-        <button class="btn btn-success" onclick="addCrashout('Other', document.getElementById('otherReason').value)">Add Other</button>
-      </div>
+      <button class="btn btn-danger" onclick="addCrashout('Video Game')">Yelling about a Video Game</button>
+      <button class="btn btn-danger" onclick="addCrashout('Minorities')">Yelling about Minorities</button>
+      <button class="btn btn-danger" onclick="addCrashout('Doordash Delivery')">Yelling about Doordash Delivery</button>
+      <button class="btn btn-danger" onclick="addCrashout('Technology')">Yelling about Technology</button>
+      <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#otherModal">Add Other</button>
     </div>
 
     <div id="stats" class="mt-5">
-      <h3>Crashout Totals</h3>
+      <div class="totals-title">Crashout Totals</div>
       <div class="row justify-content-center">
         <div class="col-md-3 counter">Sports: <span id="sports-count">0</span></div>
         <div class="col-md-3 counter">Video Games: <span id="video-count">0</span></div>
@@ -70,6 +77,25 @@
     </div>
   </div>
 
+  <!-- 🟥 Other Reason Modal -->
+  <div class="modal fade" id="otherModal" tabindex="-1" aria-labelledby="otherModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="otherModalLabel">Add Other Crashout Reason</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input type="text" id="otherReasonInput" class="form-control" placeholder="Enter other reason...">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" onclick="submitOther()">Add Other</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
   // 🔄 Fetch and update counter totals
   function loadCounters() {
@@ -88,11 +114,6 @@
 
   // 💥 Add a new crashout entry
   function addCrashout(category, reason = '') {
-    if (category === 'Other' && reason.trim() === '') {
-      alert('Please enter a reason for Other.');
-      return;
-    }
-
     fetch('api.php?action=add', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -101,14 +122,29 @@
     .then(res => res.json())
     .then(data => {
       if (data.success) {
-        console.log(`Added ${category}:`, reason);
-        document.getElementById('otherReason').value = '';
-        loadCounters(); // Refresh totals instantly
+        loadCounters();
       } else {
         alert('Failed to add event.');
       }
     })
     .catch(err => console.error('Error adding event:', err));
+  }
+
+  // 💥 Handle the Other reason modal submission
+  function submitOther() {
+    const reason = document.getElementById('otherReasonInput').value.trim();
+    if (reason === '') {
+      alert('Please enter a reason.');
+      return;
+    }
+
+    // Add the event
+    addCrashout('Other', reason);
+
+    // Reset input and close modal
+    document.getElementById('otherReasonInput').value = '';
+    const modal = bootstrap.Modal.getInstance(document.getElementById('otherModal'));
+    modal.hide();
   }
 
   // Load totals when page opens
