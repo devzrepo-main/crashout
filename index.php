@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Alex's Crashout Counter</title>
+  <title>Crashout Counter</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -115,10 +115,9 @@
       pointer-events: none;
     }
 
-    /* Background image now centered and scaled */
     #passwordBackground {
       width: auto;
-      height: 65vh; /* about 65% of screen height */
+      height: 65vh;
       max-width: 90vw;
       object-fit: contain;
       border: 2px solid var(--crash-red);
@@ -127,7 +126,6 @@
       margin-bottom: 20px;
     }
 
-    /* Centered prompt box */
     #passwordPrompt {
       position: relative;
       background: rgba(0, 0, 0, 0.75);
@@ -175,7 +173,7 @@
   <div id="passwordOverlay">
     <img id="passwordBackground" src="1000039571.jpg" alt="Background Image">
     <div id="passwordPrompt">
-      <h2>Mel Gibson's Famous Quote:</h2>
+      <h2>Enter the secret quote:</h2>
       <input type="password" id="passwordInput" placeholder="Enter password..." 
              onkeydown="if(event.key==='Enter'){checkPassword();}">
       <br>
@@ -187,9 +185,9 @@
 
   <!-- Crashout Buttons -->
   <button class="btn-crash" onclick="addCrashout('sports')">Yelling About Sports</button>
-  <button class="btn-crash" onclick="addCrashout('gaming')">Yelling About Gaming</button>
+  <button class="btn-crash" onclick="addCrashout('gaming')">Yelling About Video Games</button>
   <button class="btn-crash" onclick="addCrashout('minorities')">Yelling About Minorities</button>
-  <button class="btn-crash" onclick="addCrashout('delivery')">Yelling About Delivery</button>
+  <button class="btn-crash" onclick="addCrashout('delivery')">Yelling About DoorDash</button>
   <button class="btn-crash" onclick="addCrashout('music')">Yelling About Music</button>
   <button class="btn-crash" onclick="addCrashout('women')">Yelling About Women</button>
   <button class="btn-crash" onclick="openOtherModal()">Other Crashout</button>
@@ -228,12 +226,22 @@
       const input = document.getElementById('passwordInput').value.trim().toLowerCase();
       const overlay = document.getElementById('passwordOverlay');
       if (input === 'soon') {
+        localStorage.setItem('crashout_auth', 'true'); // ✅ Remember login
         overlay.classList.add('fadeOut');
         setTimeout(() => overlay.style.display = 'none', 1000);
       } else {
         alert('Incorrect password. Try again.');
       }
     }
+
+    // Skip overlay if already authenticated
+    document.addEventListener('DOMContentLoaded', () => {
+      if (localStorage.getItem('crashout_auth') === 'true') {
+        document.getElementById('passwordOverlay').style.display = 'none';
+      }
+      loadTotals();
+      setInterval(loadTotals, 3000); // ⚡ Live updates every 3 seconds
+    });
 
     const categories = ['sports', 'gaming', 'minorities', 'delivery', 'music', 'women', 'other'];
 
@@ -294,8 +302,6 @@
       bootstrap.Modal.getInstance(document.getElementById('otherModal')).hide();
       document.getElementById('otherReason').value = '';
     }
-
-    document.addEventListener('DOMContentLoaded', loadTotals);
   </script>
 </body>
 </html>
