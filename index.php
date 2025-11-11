@@ -158,7 +158,7 @@
   <!-- 🔐 Password Protection Overlay -->
   <div id="passwordOverlay">
     <div id="passwordBox">
-      <h2>Mel Gibson's Famous Quote::</h2>
+      <h2>Mel Gibson's Famous Quote:</h2>
       <input type="password" id="passwordInput" placeholder="Enter password..." 
              onkeydown="if(event.key==='Enter'){checkPassword();}">
       <br>
