@@ -1,15 +1,17 @@
 <?php
 /**
- * Crashout API — final version
- * Supports add / stats / clear
+ * Crashout API — stable & debug-safe version
+ * Supports: add / stats / clear
  */
 
 header('Content-Type: application/json');
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
+// Load DB config
 $config = include('config.php');
 
+// ✅ Database connection
 try {
     $pdo = new PDO(
         "mysql:host={$config['host']};dbname={$config['db']};charset={$config['charset']}",
@@ -22,11 +24,15 @@ try {
     exit;
 }
 
+// ✅ Read action
 $action = $_GET['action'] ?? '';
 
-/**
- * 🔹 ADD EVENT
- */
+// 🔍 Debug log (comment out later if not needed)
+file_put_contents('/var/log/crashout_debug.log', date('[Y-m-d H:i:s] ') . "Action received: " . $action . PHP_EOL, FILE_APPEND);
+
+// ============================================================
+// 🔹 ADD EVENT
+// ============================================================
 if ($action === 'add') {
     $category = strtolower(trim($_POST['category'] ?? ''));
     $reason   = trim($_POST['reason'] ?? '');
@@ -38,8 +44,8 @@ if ($action === 'add') {
 
     try {
         $stmt = $pdo->prepare("INSERT INTO crashout_events (category, detail, created_at) VALUES (?, ?, NOW())");
-        $success = $stmt->execute([$category, $reason]);
-        echo json_encode(['success' => $success]);
+        $stmt->execute([$category, $reason]);
+        echo json_encode(['success' => true]);
     } catch (PDOException $e) {
         file_put_contents('/var/log/crashout_api.log', date('[Y-m-d H:i:s] ') . $e->getMessage() . PHP_EOL, FILE_APPEND);
         echo json_encode(['success' => false, 'error' => 'Database error']);
@@ -47,9 +53,9 @@ if ($action === 'add') {
     exit;
 }
 
-/**
- * 🔹 GET STATS
- */
+// ============================================================
+// 🔹 GET STATS
+// ============================================================
 if ($action === 'stats') {
     try {
         $stmt = $pdo->query("SELECT category, COUNT(*) AS total FROM crashout_events GROUP BY category");
@@ -62,9 +68,9 @@ if ($action === 'stats') {
     exit;
 }
 
-/**
- * 🔹 CLEAR ALL CRASHOUTS
- */
+// ============================================================
+// 🔹 CLEAR ALL CRASHOUTS
+// ============================================================
 if ($action === 'clear') {
     try {
         $pdo->exec("TRUNCATE TABLE crashout_events");
@@ -76,9 +82,10 @@ if ($action === 'clear') {
     exit;
 }
 
-/**
- * 🔹 DEFAULT FALLBACK
- */
+// ============================================================
+// 🔹 INVALID ACTION FALLBACK
+// ============================================================
+file_put_contents('/var/log/crashout_debug.log', date('[Y-m-d H:i:s] ') . "Invalid action triggered.\n", FILE_APPEND);
 echo json_encode(['error' => 'Invalid action']);
 exit;
 ?>
