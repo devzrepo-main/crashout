@@ -18,6 +18,7 @@
       text-align: center;
       padding: 30px 10px;
       font-family: Arial, sans-serif;
+      overflow-x: hidden;
     }
 
     h1, h2, p, label {
@@ -101,35 +102,35 @@
       right: 0;
       bottom: 0;
       z-index: 9999;
-      background-color: rgba(0, 0, 0, 0.95);
+      background-color: rgba(0, 0, 0, 0.9);
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      overflow: hidden;
       transition: opacity 1s ease;
+      padding: 20px;
     }
     #passwordOverlay.fadeOut {
       opacity: 0;
       pointer-events: none;
     }
 
-    /* Background image layer */
+    /* Background image now centered and scaled */
     #passwordBackground {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0.6;
-      z-index: 1;
+      width: auto;
+      height: 65vh; /* about 65% of screen height */
+      max-width: 90vw;
+      object-fit: contain;
+      border: 2px solid var(--crash-red);
+      border-radius: 10px;
+      opacity: 0.7;
+      margin-bottom: 20px;
     }
 
     /* Centered prompt box */
     #passwordPrompt {
       position: relative;
-      z-index: 2;
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0, 0, 0, 0.75);
       border: 2px solid var(--crash-red);
       border-radius: 10px;
       padding: 25px 30px;
@@ -174,7 +175,7 @@
   <div id="passwordOverlay">
     <img id="passwordBackground" src="1000039571.jpg" alt="Background Image">
     <div id="passwordPrompt">
-      <h2>Enter the secret quote:</h2>
+      <h2>Mel Gibson's Famous Quote:</h2>
       <input type="password" id="passwordInput" placeholder="Enter password..." 
              onkeydown="if(event.key==='Enter'){checkPassword();}">
       <br>
