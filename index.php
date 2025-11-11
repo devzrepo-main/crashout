@@ -55,11 +55,11 @@
     <h1>🔥 Crashout Counter 🔥</h1>
 
     <div class="d-grid gap-2 col-6 mx-auto">
-      <button class="btn btn-danger" onclick="addCrashout('sports')">Yelling about Sports</button>
-      <button class="btn btn-danger" onclick="addCrashout('gaming')">Yelling about a Video Game</button>
-      <button class="btn btn-danger" onclick="addCrashout('minorities')">Yelling about Minorities</button>
-      <button class="btn btn-danger" onclick="addCrashout('delivery')">Yelling about Doordash Delivery</button>
-      <button class="btn btn-danger" onclick="addCrashout('technology')">Yelling about Technology</button>
+      <button class="btn btn-danger" onclick="addCrashout('sports')">Yelling About Sports</button>
+      <button class="btn btn-danger" onclick="addCrashout('gaming')">Yelling About a Video Game</button>
+      <button class="btn btn-danger" onclick="addCrashout('minorities')">Yelling About Minorities</button>
+      <button class="btn btn-danger" onclick="addCrashout('delivery')">Yelling About DoorDash Delivery</button>
+      <button class="btn btn-danger" onclick="addCrashout('technology')">Yelling About Technology</button>
       <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#otherModal">Add Other</button>
       <button class="btn btn-outline-danger mt-3" onclick="clearAll()">🧨 Clear All Crashouts</button>
     </div>
