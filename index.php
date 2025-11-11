@@ -56,7 +56,7 @@
 
     <div class="d-grid gap-2 col-6 mx-auto">
       <button class="btn btn-danger" onclick="addCrashout('sports')">Yelling About Sports</button>
-      <button class="btn btn-danger" onclick="addCrashout('gaming')">Yelling About a Video Game</button>
+      <button class="btn btn-danger" onclick="addCrashout('gaming')">Yelling About A Video Game</button>
       <button class="btn btn-danger" onclick="addCrashout('minorities')">Yelling About Minorities</button>
       <button class="btn btn-danger" onclick="addCrashout('delivery')">Yelling About DoorDash Delivery</button>
       <button class="btn btn-danger" onclick="addCrashout('technology')">Yelling About Technology</button>
