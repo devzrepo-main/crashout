@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Crashout Counter</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
   <style>
     body {
       background-color: #0a0a0a;
@@ -14,10 +13,7 @@
       text-align: center;
       padding-top: 50px;
     }
-    h1 {
-      margin-bottom: 40px;
-      color: #ff0000;
-    }
+    h1 { margin-bottom: 40px; color: #ff0000; }
     .btn {
       margin: 10px;
       font-weight: bold;
@@ -46,8 +42,11 @@
       color: #ff0000;
       border: 1px solid #ff0000;
     }
-    .form-control:focus {
-      box-shadow: 0 0 5px #ff0000;
+    .form-control:focus { box-shadow: 0 0 5px #ff0000; }
+    .total-count {
+      font-size: 1.2rem;
+      margin-left: 10px;
+      color: #ff0000;
     }
   </style>
 </head>
@@ -62,10 +61,14 @@
       <button class="btn btn-danger" onclick="addCrashout('delivery')">Yelling about Doordash Delivery</button>
       <button class="btn btn-danger" onclick="addCrashout('technology')">Yelling about Technology</button>
       <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#otherModal">Add Other</button>
+      <button class="btn btn-outline-danger mt-3" onclick="clearAll()">🧨 Clear All Crashouts</button>
     </div>
 
     <div id="stats" class="mt-5">
-      <div class="totals-title">Crashout Totals</div>
+      <div class="totals-title">
+        Crashout Totals
+        <span class="total-count">All: <span id="total-all">0</span></span>
+      </div>
       <div class="row justify-content-center">
         <div class="col-md-3 counter">Sports: <span id="sports-count">0</span></div>
         <div class="col-md-3 counter">Video Games: <span id="video-count">0</span></div>
@@ -102,12 +105,23 @@
     fetch('api.php?action=stats')
       .then(res => res.json())
       .then(data => {
-        document.getElementById('sports-count').textContent = data.sports || 0;
-        document.getElementById('video-count').textContent = data.gaming || 0;
-        document.getElementById('minorities-count').textContent = data.minorities || 0;
-        document.getElementById('doordash-count').textContent = data.delivery || 0;
-        document.getElementById('technology-count').textContent = data.technology || 0;
-        document.getElementById('other-count').textContent = data.other || 0;
+        const sports = data.sports || 0;
+        const gaming = data.gaming || 0;
+        const minorities = data.minorities || 0;
+        const delivery = data.delivery || 0;
+        const technology = data.technology || 0;
+        const other = data.other || 0;
+
+        document.getElementById('sports-count').textContent = sports;
+        document.getElementById('video-count').textContent = gaming;
+        document.getElementById('minorities-count').textContent = minorities;
+        document.getElementById('doordash-count').textContent = delivery;
+        document.getElementById('technology-count').textContent = technology;
+        document.getElementById('other-count').textContent = other;
+
+        // Calculate total crashouts
+        const total = sports + gaming + minorities + delivery + technology + other;
+        document.getElementById('total-all').textContent = total;
       })
       .catch(err => console.error('Error loading counters:', err));
   }
@@ -137,17 +151,29 @@
       alert('Please enter a reason.');
       return;
     }
-
-    // Add the event
     addCrashout('other', reason);
-
-    // Reset input and close modal
     document.getElementById('otherReasonInput').value = '';
     const modal = bootstrap.Modal.getInstance(document.getElementById('otherModal'));
     modal.hide();
   }
 
-  // Load totals when page opens
+  // 💣 Clear all crashouts
+  function clearAll() {
+    if (!confirm('Are you sure you want to clear ALL crashouts? This cannot be undone.')) return;
+
+    fetch('api.php?action=clear', { method: 'POST' })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          loadCounters();
+          alert('All crashouts cleared!');
+        } else {
+          alert('Failed to clear crashouts.');
+        }
+      })
+      .catch(err => console.error('Error clearing crashouts:', err));
+  }
+
   document.addEventListener('DOMContentLoaded', loadCounters);
   </script>
 </body>
