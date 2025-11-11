@@ -56,11 +56,11 @@
     <h1>🔥 Crashout Counter 🔥</h1>
 
     <div class="d-grid gap-2 col-6 mx-auto">
-      <button class="btn btn-danger" onclick="addCrashout('Sports')">Yelling about Sports</button>
-      <button class="btn btn-danger" onclick="addCrashout('Video Game')">Yelling about a Video Game</button>
-      <button class="btn btn-danger" onclick="addCrashout('Minorities')">Yelling about Minorities</button>
-      <button class="btn btn-danger" onclick="addCrashout('Doordash Delivery')">Yelling about Doordash Delivery</button>
-      <button class="btn btn-danger" onclick="addCrashout('Technology')">Yelling about Technology</button>
+      <button class="btn btn-danger" onclick="addCrashout('sports')">Yelling about Sports</button>
+      <button class="btn btn-danger" onclick="addCrashout('gaming')">Yelling about a Video Game</button>
+      <button class="btn btn-danger" onclick="addCrashout('minorities')">Yelling about Minorities</button>
+      <button class="btn btn-danger" onclick="addCrashout('delivery')">Yelling about Doordash Delivery</button>
+      <button class="btn btn-danger" onclick="addCrashout('technology')">Yelling about Technology</button>
       <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#otherModal">Add Other</button>
     </div>
 
@@ -102,12 +102,12 @@
     fetch('api.php?action=stats')
       .then(res => res.json())
       .then(data => {
-        document.getElementById('sports-count').textContent = data.Sports || 0;
-        document.getElementById('video-count').textContent = data["Video Game"] || 0;
-        document.getElementById('minorities-count').textContent = data.Minorities || 0;
-        document.getElementById('doordash-count').textContent = data["Doordash Delivery"] || 0;
-        document.getElementById('technology-count').textContent = data.Technology || 0;
-        document.getElementById('other-count').textContent = data.Other || 0;
+        document.getElementById('sports-count').textContent = data.sports || 0;
+        document.getElementById('video-count').textContent = data.gaming || 0;
+        document.getElementById('minorities-count').textContent = data.minorities || 0;
+        document.getElementById('doordash-count').textContent = data.delivery || 0;
+        document.getElementById('technology-count').textContent = data.technology || 0;
+        document.getElementById('other-count').textContent = data.other || 0;
       })
       .catch(err => console.error('Error loading counters:', err));
   }
@@ -139,7 +139,7 @@
     }
 
     // Add the event
-    addCrashout('Other', reason);
+    addCrashout('other', reason);
 
     // Reset input and close modal
     document.getElementById('otherReasonInput').value = '';
