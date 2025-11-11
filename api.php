@@ -1,7 +1,7 @@
 <?php
 /**
- * Crashout API
- * Handles adding, listing, and clearing crashout events
+ * Crashout API — final version
+ * Supports add / stats / clear
  */
 
 header('Content-Type: application/json');
@@ -24,6 +24,9 @@ try {
 
 $action = $_GET['action'] ?? '';
 
+/**
+ * 🔹 ADD EVENT
+ */
 if ($action === 'add') {
     $category = strtolower(trim($_POST['category'] ?? ''));
     $reason   = trim($_POST['reason'] ?? '');
@@ -44,6 +47,9 @@ if ($action === 'add') {
     exit;
 }
 
+/**
+ * 🔹 GET STATS
+ */
 if ($action === 'stats') {
     try {
         $stmt = $pdo->query("SELECT category, COUNT(*) AS total FROM crashout_events GROUP BY category");
@@ -56,6 +62,9 @@ if ($action === 'stats') {
     exit;
 }
 
+/**
+ * 🔹 CLEAR ALL CRASHOUTS
+ */
 if ($action === 'clear') {
     try {
         $pdo->exec("TRUNCATE TABLE crashout_events");
@@ -67,6 +76,9 @@ if ($action === 'clear') {
     exit;
 }
 
+/**
+ * 🔹 DEFAULT FALLBACK
+ */
 echo json_encode(['error' => 'Invalid action']);
 exit;
 ?>
