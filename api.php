@@ -8,7 +8,6 @@ header('Content-Type: application/json');
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Load DB config
 $config = include('config.php');
 
 try {
@@ -25,9 +24,6 @@ try {
 
 $action = $_GET['action'] ?? '';
 
-/**
- * 🔹 Add new event
- */
 if ($action === 'add') {
     $category = strtolower(trim($_POST['category'] ?? ''));
     $reason   = trim($_POST['reason'] ?? '');
@@ -48,9 +44,6 @@ if ($action === 'add') {
     exit;
 }
 
-/**
- * 🔹 Fetch stats (counts per category)
- */
 if ($action === 'stats') {
     try {
         $stmt = $pdo->query("SELECT category, COUNT(*) AS total FROM crashout_events GROUP BY category");
@@ -63,9 +56,6 @@ if ($action === 'stats') {
     exit;
 }
 
-/**
- * 🔹 Clear all crashouts
- */
 if ($action === 'clear') {
     try {
         $pdo->exec("TRUNCATE TABLE crashout_events");
@@ -77,9 +67,6 @@ if ($action === 'clear') {
     exit;
 }
 
-/**
- * 🔹 Default
- */
 echo json_encode(['error' => 'Invalid action']);
 exit;
 ?>
