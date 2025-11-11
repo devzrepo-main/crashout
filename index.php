@@ -3,25 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <title>Crashout Counter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
   <style>
     body {
       background-color: #111;
-      color: #fff;
+      color: #ff3333;
       text-align: center;
-      padding-top: 40px;
+      padding: 30px 10px;
+      font-family: Arial, sans-serif;
     }
     h1, h2 {
       color: #ff3333;
+      font-weight: bold;
     }
     .btn-crash {
       background-color: #ff3333;
       color: white;
       border: none;
-      margin: 8px;
-      padding: 12px 20px;
+      width: 90%;
+      max-width: 400px;
+      margin: 10px auto;
+      display: block;
+      padding: 15px;
       font-size: 1.2em;
       border-radius: 8px;
+      transition: background-color 0.2s ease;
     }
     .btn-crash:hover {
       background-color: #cc0000;
@@ -31,16 +40,31 @@
       padding: 20px;
       border: 2px solid #ff3333;
       border-radius: 10px;
-      display: inline-block;
+      width: 90%;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+      background-color: #1a1a1a;
     }
-    #totalCount {
-      font-size: 1.5em;
+    .totals h2 {
+      color: #ff3333;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+    .totals p {
+      font-size: 1.1em;
+      margin: 5px 0;
       color: #ff3333;
     }
     .btn-clear {
       background-color: #444;
       color: #fff;
-      margin-top: 10px;
+      width: 90%;
+      max-width: 400px;
+      margin: 20px auto 0;
+      display: block;
+      padding: 12px;
+      border-radius: 8px;
     }
     .btn-clear:hover {
       background-color: #666;
@@ -50,30 +74,24 @@
 <body>
   <h1>🔥 Crashout Tracker 🔥</h1>
 
-  <!-- 🔹 Crashout Category Buttons -->
-  <div id="buttons">
-    <button class="btn-crash" onclick="addCrashout('sports')">Yelling About Sports</button>
-    <button class="btn-crash" onclick="addCrashout('gaming')">Yelling About Video Games</button>
-    <button class="btn-crash" onclick="addCrashout('minorities')">Yelling About Minorities</button>
-    <button class="btn-crash" onclick="addCrashout('delivery')">Yelling About DoorDash</button>
+  <!-- Crashout Buttons -->
+  <button class="btn-crash" onclick="addCrashout('sports')">Yelling About Sports</button>
+  <button class="btn-crash" onclick="addCrashout('gaming')">Yelling About Video Games</button>
+  <button class="btn-crash" onclick="addCrashout('minorities')">Yelling About Minorities</button>
+  <button class="btn-crash" onclick="addCrashout('delivery')">Yelling About DoorDash</button>
+  <button class="btn-crash" onclick="addCrashout('music')">Yelling About Music</button>
+  <button class="btn-crash" onclick="openOtherModal()">Other Crashout</button>
 
-    <!-- 🆕 Moved Music ABOVE Other -->
-    <button class="btn-crash" onclick="addCrashout('music')">Yelling About Music</button>
-
-    <hr style="border-color:#ff3333; width:60%; margin:20px auto;">
-
-    <!-- 🔹 "Other" Section Trigger -->
-    <button class="btn-crash" onclick="openOtherModal()">Other Crashout</button>
-  </div>
-
-  <!-- 🔹 Totals Display -->
+  <!-- Totals -->
   <div class="totals mt-4">
     <h2>Crashout Totals</h2>
-    <p id="totalCount">Loading...</p>
+    <div id="totalsContainer">
+      <p>Loading totals...</p>
+    </div>
     <button class="btn btn-clear" onclick="clearAll()">Clear All Crashouts</button>
   </div>
 
-  <!-- 🔹 Modal for "Other" -->
+  <!-- Modal for Other -->
   <div class="modal fade" id="otherModal" tabindex="-1" aria-labelledby="otherModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content text-dark">
@@ -94,6 +112,8 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
+    const categories = ['sports', 'gaming', 'minorities', 'delivery', 'music', 'other'];
+
     async function addCrashout(category, reason = '') {
       try {
         const res = await fetch('./api.php?action=add', {
@@ -118,21 +138,32 @@
       try {
         const res = await fetch('./api.php?action=stats');
         const data = await res.json();
-        let total = 0;
-        for (const count of Object.values(data)) {
-          total += parseInt(count);
+        const totalsDiv = document.getElementById('totalsContainer');
+        totalsDiv.innerHTML = '';
+
+        let grandTotal = 0;
+        for (const cat of categories) {
+          const count = parseInt(data[cat] || 0);
+          grandTotal += count;
+          const label = cat.charAt(0).toUpperCase() + cat.slice(1);
+          const p = document.createElement('p');
+          p.innerHTML = `${label}: <strong>${count}</strong>`;
+          totalsDiv.appendChild(p);
         }
-        document.getElementById('totalCount').innerText = `Total Crashouts: ${total}`;
+
+        const totalP = document.createElement('p');
+        totalP.innerHTML = `<hr style="border-color:#ff3333;">Total: <strong>${grandTotal}</strong>`;
+        totalsDiv.appendChild(totalP);
       } catch (err) {
         console.error('Failed to load totals:', err);
-        document.getElementById('totalCount').innerText = 'Error loading totals.';
+        document.getElementById('totalsContainer').innerHTML = '<p>Error loading totals.</p>';
       }
     }
 
     async function clearAll() {
       if (!confirm('Clear all crashouts?')) return;
       try {
-        const res = await fetch('./api.php?action=clear', {method: 'POST'});
+        const res = await fetch('./api.php?action=clear', { method: 'POST' });
         const data = await res.json();
         if (data.success) {
           loadTotals();
@@ -162,7 +193,6 @@
       document.getElementById('otherReason').value = '';
     }
 
-    // Initialize totals on load
     document.addEventListener('DOMContentLoaded', loadTotals);
   </script>
 </body>
