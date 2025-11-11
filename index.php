@@ -187,7 +187,7 @@
   <button class="btn-crash" onclick="addCrashout('sports')">Yelling About Sports</button>
   <button class="btn-crash" onclick="addCrashout('gaming')">Yelling About Video Games</button>
   <button class="btn-crash" onclick="addCrashout('minorities')">Yelling About Minorities</button>
-  <button class="btn-crash" onclick="addCrashout('delivery')">Yelling About DoorDash</button>
+  <button class="btn-crash" onclick="addCrashout('delivery')">Yelling About Delivery</button>
   <button class="btn-crash" onclick="addCrashout('music')">Yelling About Music</button>
   <button class="btn-crash" onclick="addCrashout('women')">Yelling About Women</button>
   <button class="btn-crash" onclick="openOtherModal()">Other Crashout</button>
