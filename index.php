@@ -112,6 +112,7 @@
   <button class="btn-crash" onclick="addCrashout('sports')">Yelling About Sports</button>
   <button class="btn-crash" onclick="addCrashout('gaming')">Yelling About Video Games</button>
   <button class="btn-crash" onclick="addCrashout('minorities')">Yelling About Minorities</button>
+  <button class="btn-crash" onclick="addCrashout('women')">Yelling About Women</button>
   <button class="btn-crash" onclick="addCrashout('delivery')">Yelling About Delivery</button>
   <button class="btn-crash" onclick="addCrashout('music')">Yelling About Music</button>
   <button class="btn-crash" onclick="openOtherModal()">Other Crashout</button>
@@ -146,7 +147,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    const categories = ['sports', 'gaming', 'minorities', 'delivery', 'music', 'other'];
+    const categories = ['sports', 'gaming', 'minorities', 'women', 'delivery', 'music', 'other'];
 
     async function addCrashout(category, reason = '') {
       try {
