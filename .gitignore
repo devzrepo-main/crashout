@@ -1,0 +1,10 @@
+# Never commit real DB creds
+config.php
+
+# Logs / dumps
+*.log
+*.sql
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
