@@ -100,72 +100,85 @@
       left: 0;
       right: 0;
       bottom: 0;
+      z-index: 9999;
       background-color: rgba(0, 0, 0, 0.95);
-      color: var(--crash-red);
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
-      z-index: 9999;
-      text-align: center;
-      opacity: 1;
+      overflow: hidden;
       transition: opacity 1s ease;
     }
     #passwordOverlay.fadeOut {
       opacity: 0;
       pointer-events: none;
     }
-    #passwordBox {
-      background-color: #000;
-      border: 2px solid var(--crash-red);
-      border-radius: 12px;
-      padding: 30px;
-      width: 90%;
-      max-width: 600px;
+
+    /* Background image layer */
+    #passwordBackground {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.6;
+      z-index: 1;
     }
+
+    /* Centered prompt box */
+    #passwordPrompt {
+      position: relative;
+      z-index: 2;
+      background: rgba(0, 0, 0, 0.7);
+      border: 2px solid var(--crash-red);
+      border-radius: 10px;
+      padding: 25px 30px;
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+      color: var(--crash-red);
+    }
+
+    #passwordPrompt h2 {
+      color: var(--crash-red);
+      margin-bottom: 15px;
+    }
+
     #passwordInput {
       background-color: #111;
       color: var(--crash-red);
       border: 1px solid var(--crash-red);
       padding: 10px;
       width: 80%;
-      margin-top: 10px;
       border-radius: 5px;
       text-align: center;
+      margin-bottom: 10px;
     }
+
     #passwordSubmit {
       background-color: var(--crash-red);
       color: white;
       border: none;
-      margin-top: 20px;
       padding: 10px 25px;
       border-radius: 6px;
+      font-weight: bold;
     }
+
     #passwordSubmit:hover {
       background-color: var(--crash-red-dark);
-    }
-    #passwordImage {
-      border: 2px solid var(--crash-red);
-      border-radius: 10px;
-      margin-top: 20px;
-      width: 100%;
-      max-width: 560px;
-      height: auto;
     }
   </style>
 </head>
 <body>
-  <!-- 🔐 Password Protection Overlay -->
+  <!-- 🔐 Password Overlay -->
   <div id="passwordOverlay">
-    <div id="passwordBox">
-      <h2>Mel Gibson's Famous Quote:</h2>
+    <img id="passwordBackground" src="1000039571.jpg" alt="Background Image">
+    <div id="passwordPrompt">
+      <h2>Enter the secret quote:</h2>
       <input type="password" id="passwordInput" placeholder="Enter password..." 
              onkeydown="if(event.key==='Enter'){checkPassword();}">
       <br>
       <button id="passwordSubmit" onclick="checkPassword()">Submit</button>
-
-      <!-- Embedded Image -->
-      <img id="passwordImage" src="1000039571.jpg" alt="Crashout Image">
     </div>
   </div>
 
@@ -189,7 +202,7 @@
     <button class="btn btn-clear" onclick="clearAll()">Clear All Crashouts</button>
   </div>
 
-  <!-- Modal for Other -->
+  <!-- Modal -->
   <div class="modal fade" id="otherModal" tabindex="-1" aria-labelledby="otherModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
@@ -210,7 +223,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // 🔐 Password Check with Fade-Out
     function checkPassword() {
       const input = document.getElementById('passwordInput').value.trim().toLowerCase();
       const overlay = document.getElementById('passwordOverlay');
