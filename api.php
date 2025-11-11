@@ -1,7 +1,7 @@
 <?php
 /**
  * Crashout API
- * Handles adding new crashout events and returning category stats
+ * Handles adding, listing, and clearing crashout events
  */
 
 header('Content-Type: application/json');
@@ -23,16 +23,14 @@ try {
     exit;
 }
 
-// Determine which API action is being requested
 $action = $_GET['action'] ?? '';
 
 /**
- * 🔹 ADD EVENT
- * Called when user clicks a crashout button
+ * 🔹 Add new event
  */
 if ($action === 'add') {
-    $category = trim($_POST['category'] ?? '');
-    $reason   = trim($_POST['reason'] ?? ''); // frontend still sends 'reason'
+    $category = strtolower(trim($_POST['category'] ?? ''));
+    $reason   = trim($_POST['reason'] ?? '');
 
     if ($category === '') {
         echo json_encode(['success' => false, 'error' => 'Missing category']);
@@ -40,15 +38,9 @@ if ($action === 'add') {
     }
 
     try {
-        // Note: DB column name is 'detail', not 'reason'
         $stmt = $pdo->prepare("INSERT INTO crashout_events (category, detail, created_at) VALUES (?, ?, NOW())");
         $success = $stmt->execute([$category, $reason]);
-
-        if ($success) {
-            echo json_encode(['success' => true]);
-        } else {
-            echo json_encode(['success' => false, 'error' => 'Insert failed']);
-        }
+        echo json_encode(['success' => $success]);
     } catch (PDOException $e) {
         file_put_contents('/var/log/crashout_api.log', date('[Y-m-d H:i:s] ') . $e->getMessage() . PHP_EOL, FILE_APPEND);
         echo json_encode(['success' => false, 'error' => 'Database error']);
@@ -57,8 +49,7 @@ if ($action === 'add') {
 }
 
 /**
- * 🔹 STATS
- * Returns total count for each crashout category
+ * 🔹 Fetch stats (counts per category)
  */
 if ($action === 'stats') {
     try {
@@ -73,8 +64,21 @@ if ($action === 'stats') {
 }
 
 /**
- * 🔹 DEFAULT RESPONSE
- * Triggered if no or unknown action is passed
+ * 🔹 Clear all crashouts
+ */
+if ($action === 'clear') {
+    try {
+        $pdo->exec("TRUNCATE TABLE crashout_events");
+        echo json_encode(['success' => true]);
+    } catch (PDOException $e) {
+        file_put_contents('/var/log/crashout_api.log', date('[Y-m-d H:i:s] ') . $e->getMessage() . PHP_EOL, FILE_APPEND);
+        echo json_encode(['success' => false, 'error' => 'Failed to clear crashouts']);
+    }
+    exit;
+}
+
+/**
+ * 🔹 Default
  */
 echo json_encode(['error' => 'Invalid action']);
 exit;
