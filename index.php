@@ -189,6 +189,7 @@
   <button class="btn-crash" onclick="addCrashout('minorities')">Yelling About Minorities</button>
   <button class="btn-crash" onclick="addCrashout('delivery')">Yelling About Delivery</button>
   <button class="btn-crash" onclick="addCrashout('music')">Yelling About Music</button>
+  <button class="btn-crash" onclick="addCrashout('work')">Yelling About Work</button>
   <button class="btn-crash" onclick="addCrashout('women')">Yelling About Women</button>
   <button class="btn-crash" onclick="openOtherModal()">Other Crashout</button>
 
@@ -243,7 +244,7 @@
       setInterval(loadTotals, 3000); // ⚡ Live updates every 3 seconds
     });
 
-    const categories = ['sports', 'gaming', 'minorities', 'delivery', 'music', 'women', 'other'];
+    const categories = ['sports', 'gaming', 'minorities', 'delivery', 'music', 'work', 'women', 'other'];
 
     async function addCrashout(category, reason = '') {
       try {
